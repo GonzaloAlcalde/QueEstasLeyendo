@@ -81,33 +81,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        try{
-            FileOutputStream fileOutputStream = openFileOutput("fileloko", MODE_PRIVATE);
-            fileOutputStream.write("holis".getBytes());
-            fileOutputStream.close();
-            //Toast.makeText(getApplicationContext(), "Aiudaaa", Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try{
-            String Message;
-            FileInputStream fileInputStream = openFileInput("fileloko");
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuffer stringBuffer = new StringBuffer();
-            while((Message=bufferedReader.readLine())!=null){
-                stringBuffer.append(Message + "\n");
-            }
-            Toast.makeText(getApplicationContext(), stringBuffer, Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
