@@ -3,7 +3,9 @@ package ar.edu.undav.queestasleyendo;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +30,22 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        deleteFile("users");
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -137,7 +156,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -196,7 +214,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return (email.contains("@") && email.contains("."));
     }
 
     private boolean isPasswordValid(String password) {
@@ -310,8 +328,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+            // TODO: attempt authentication against a network service.
             try {
                 // Simulate network access.
                 Thread.sleep(2000);
@@ -319,16 +337,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
+            /*for (String credential : DUMMY_CREDENTIALS) {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     return pieces[1].equals(mPassword);
                 }
+            }*/
+
+            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
+            //ArrayList<String> users;
+            //users = ManejadorArchivos.LeerArchivo("users", getApplicationContext());
+
+            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"a@a.com\",\"pass\":\"aaaaa\"}\n", getApplicationContext());
+            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"b@b.com\",\"pass\":\"bbbbb\"}\n", getApplicationContext());
+            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"c@c.com\",\"pass\":\"ccccc\"}\n", getApplicationContext());
+            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"d@d.com\",\"pass\":\"ddddd\"}\n", getApplicationContext());
+            ArrayList<String> users;
+            users = ManejadorArchivos.LeerArchivo("users", getApplicationContext());
+
+            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
+
+            Boolean loginValido = false;
+            try {
+                loginValido = ManejadorJSON.validarUsuarioContraseniaJSON(users, mEmail, mPassword, getApplicationContext());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
             // TODO: register the new account here.
-            return true;
+            return loginValido;
         }
 
         @Override
