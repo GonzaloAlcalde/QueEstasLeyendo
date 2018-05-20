@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QueEstasLeyendo</string>
+    <string name="app_name">¿Qué estás leyendo?</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -14,4 +14,8 @@
         completions."
     </string>
     <string name="error_password_required">Ingrese su contraseña</string>
+    <string name="text_bienvenido">¡Bienvenido!</string>
+    <string name="text_login">Por favor ingrese su e-mail y contraseña para continuar:</string>
+    <string name="text_registro">¿No tenés una cuenta? Entrá acá para registrarte:</string>
+    <string name="text_botonregistro">Registrarte</string>
 </resources>
