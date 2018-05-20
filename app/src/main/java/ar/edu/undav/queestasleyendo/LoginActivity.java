@@ -105,6 +105,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mTextView2 = findViewById(R.id.textView2);
         mTextView3 = findViewById(R.id.textView3);
 
+        logout();
+
         ArrayList<String> stringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getApplicationContext());
         JSONObject jsonObject;
         try {
