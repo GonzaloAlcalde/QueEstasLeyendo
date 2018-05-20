@@ -18,7 +18,7 @@
     <string name="text_login">Por favor ingrese su e-mail y contraseña para continuar:</string>
     <string name="text_registro">¿No tenés una cuenta? Entrá acá para registrarte:</string>
     <string name="text_botonregistro">Registrarte</string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile">¿Qué estás leyendo?</string>
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Perfil</string>
     <string name="title_notifications">Notificaciones</string>
