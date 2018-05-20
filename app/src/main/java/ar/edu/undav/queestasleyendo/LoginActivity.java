@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.JsonReader;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,8 +29,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +58,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Button mRegisterButton;
 
     private String mailUsuarioLogeado;
+    private String contraseniaUsuarioLogeado;
+    private Boolean usuarioLogeado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mTextView2 = findViewById(R.id.textView2);
         mTextView3 = findViewById(R.id.textView3);
 
+        ArrayList<String> stringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getApplicationContext());
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(stringUsuarioLogeado.get(0));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonObject = null;
+        }
+
+        if (jsonObject != null) {
+            usuarioLogeado = !jsonObject.isNull("email");
+            if (usuarioLogeado) {
+                try {
+                    mailUsuarioLogeado = jsonObject.getString("email");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    contraseniaUsuarioLogeado = jsonObject.getString("pass");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                showProgress(true);
+                mAuthTask = new UserLoginTask(mailUsuarioLogeado, contraseniaUsuarioLogeado);
+                mAuthTask.execute((Void) null);
+            }
+        }
     }
 
     private void populateAutoComplete() {
@@ -155,19 +187,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
+        boolean cancel = false;
+        View focusView = null;
+
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
         // Check for a valid password.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_password_required));
             focusView = mPasswordView;
@@ -200,11 +227,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return (email.contains("@") && email.contains("."));
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
     }
 
     //Shows the progress UI and hides the login form.
@@ -338,17 +360,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
-            //ArrayList<String> users;
-            //users = ManejadorArchivos.LeerArchivo("users", getApplicationContext());
-
             ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"a@a.com\",\"pass\":\"aaaaa\"}\n", getApplicationContext());
             ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"b@b.com\",\"pass\":\"bbbbb\"}\n", getApplicationContext());
             ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"c@c.com\",\"pass\":\"ccccc\"}\n", getApplicationContext());
             ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"d@d.com\",\"pass\":\"ddddd\"}\n", getApplicationContext());
+            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
+
             ArrayList<String> users;
             users = ManejadorArchivos.LeerArchivo("users", getApplicationContext());
-
-            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
 
             Boolean loginValido = false;
             try {
@@ -366,9 +385,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                mailUsuarioLogeado = mEmail;
+                ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado","{\"email\":"+mEmail+",\"pass\":"+mPassword+"}", getApplicationContext());
+                Toast.makeText(getApplicationContext(), "Usuario logeado: "+mEmail, Toast.LENGTH_LONG).show();
                 finish();
             } else {
+                mPasswordView.getText().clear();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -382,6 +403,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     public void logout(){
-        mailUsuarioLogeado = null;
+        ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado", "{\"email\":NULL,\"pass\":NULL}", getApplicationContext());
+        Toast.makeText(getApplicationContext(), "Usuario deslogeado", Toast.LENGTH_LONG).show();
     }
 }

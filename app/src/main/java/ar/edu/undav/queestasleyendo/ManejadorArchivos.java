@@ -18,6 +18,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class ManejadorArchivos {
+    public static void EscribirArchivoNuevo(String nombreArchivo, String texto, Context contexto) {
+        try {
+            FileOutputStream fileOutputStream = contexto.openFileOutput(nombreArchivo, Context.MODE_PRIVATE);
+            OutputStreamWriter writer= new OutputStreamWriter(fileOutputStream);
+            writer.append(texto);
+
+            fileOutputStream.flush();
+            writer.flush();
+            writer.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void EscribirArchivo(String nombreArchivo, String texto, Context contexto) {
         try {
             FileOutputStream fileOutputStream = contexto.openFileOutput(nombreArchivo, Context.MODE_APPEND);
