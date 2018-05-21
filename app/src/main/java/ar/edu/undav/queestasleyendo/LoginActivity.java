@@ -385,14 +385,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
+            //showProgress(false);
 
             if (success) {
                 ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado","{\"email\":"+mEmail+",\"pass\":"+mPassword+"}", getApplicationContext());
                 Toast.makeText(getApplicationContext(), "Usuario logeado: "+mEmail, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 startActivity(intent);
+                finish();
             } else {
+                showProgress(false);
                 mPasswordView.getText().clear();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
