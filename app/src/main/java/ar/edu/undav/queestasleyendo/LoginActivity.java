@@ -96,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
                 //TODO: HACER REGISTRO
+                launchRegisterActivity(v);
             }
         });
 
@@ -412,4 +413,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado", "{\"email\":NULL,\"pass\":NULL}", getApplicationContext());
         Toast.makeText(getApplicationContext(), "Usuario deslogeado", Toast.LENGTH_LONG).show();
     } */
+
+    public void launchRegisterActivity(View v){
+        startActivity(new Intent(this, RegisterActivity.class));
+    }
 }

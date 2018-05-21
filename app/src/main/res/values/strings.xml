@@ -4,12 +4,16 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Contraseña</string>
+    <string name="prompt_second_pasword">Repetir contraseña</string>
+    <string name="prompt_name">Nombre</string>
+    <string name="prompt_surname">Apellido</string>
     <string name="action_sign_in">Entrar</string>
     <string name="action_sign_in_short">Entrar</string>
     <string name="error_invalid_email">La dirección de email es inválida</string>
     <string name="error_invalid_password">La contraseña es muy corta</string>
     <string name="error_incorrect_password">La contraseña es incorrecta</string>
     <string name="error_field_required">Campo requerido</string>
+    <string name="error_repeat_password">La contraseña debe ser igual</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -18,6 +22,7 @@
     <string name="text_login">Por favor ingrese su e-mail y contraseña para continuar:</string>
     <string name="text_registro">¿No tenés una cuenta? Entrá acá para registrarte:</string>
     <string name="text_botonregistro">Registrarte</string>
+    <string name="text_registro_extra">Ingresá aquí tus datos</string>
     <string name="title_activity_profile">¿Qué estás leyendo?</string>
     <string name="title_home">Inicio</string>
     <string name="title_dashboard">Perfil</string>
