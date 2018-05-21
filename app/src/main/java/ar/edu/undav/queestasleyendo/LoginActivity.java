@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mTextView2 = findViewById(R.id.textView2);
         mTextView3 = findViewById(R.id.textView3);
 
-        logout();
+        //logout();
 
         ArrayList<String> stringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getApplicationContext());
         JSONObject jsonObject;
@@ -408,8 +408,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    public void logout(){
+/*    public void logout(){
         ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado", "{\"email\":NULL,\"pass\":NULL}", getApplicationContext());
         Toast.makeText(getApplicationContext(), "Usuario deslogeado", Toast.LENGTH_LONG).show();
-    }
+    } */
 }

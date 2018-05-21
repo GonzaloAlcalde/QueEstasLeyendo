@@ -1,11 +1,14 @@
 package ar.edu.undav.queestasleyendo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -41,4 +44,11 @@ public class ProfileActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
+    public void logout(View view) {
+        ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado", "{\"email\":NULL,\"pass\":NULL}", getApplicationContext());
+        Toast.makeText(getApplicationContext(), "Usuario deslogeado", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
