@@ -11,7 +11,7 @@
     <string name="action_sign_in_short">Entrar</string>
     <string name="error_invalid_email">La dirección de email es inválida</string>
     <string name="error_invalid_password">La contraseña es muy corta</string>
-    <string name="error_incorrect_password">La contraseña es incorrecta</string>
+    <string name="error_incorrect_password">El mail o contraseña son incorrectos</string>
     <string name="error_field_required">Campo requerido</string>
     <string name="error_repeat_password">La contraseña debe ser igual</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -28,4 +28,5 @@
     <string name="title_dashboard">Perfil</string>
     <string name="title_notifications">Notificaciones</string>
     <string name="logout">Cerrar sesión</string>
+    <string name="error_contrasenias_diferentes">Las contraseñas no son iguales</string>
 </resources>

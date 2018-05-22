@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.JsonReader;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = findViewById(R.id.email);
         populateAutoComplete();
 
+        //deleteFile("users");
         mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -91,12 +91,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         mRegisterButton = findViewById(R.id.register_button);
-        Button mRegisterButton = findViewById(R.id.register_button);
-        mRegisterButton.setOnClickListener(new OnClickListener() {
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //TODO: HACER REGISTRO
-                launchRegisterActivity(v);
+            public void onClick(View view) {
+                launchRegisterActivity(view);
             }
         });
 
@@ -106,8 +104,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mTextView = findViewById(R.id.textView);
         mTextView2 = findViewById(R.id.textView2);
         mTextView3 = findViewById(R.id.textView3);
-
-        //logout();
 
         ArrayList<String> stringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getApplicationContext());
         JSONObject jsonObject;
@@ -229,7 +225,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return (email.contains("@") && email.contains("."));
     }
 
@@ -363,13 +358,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
 
-            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
-            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"a@a.com\",\"pass\":\"aaaaa\"}\n", getApplicationContext());
-            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"b@b.com\",\"pass\":\"bbbbb\"}\n", getApplicationContext());
-            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"c@c.com\",\"pass\":\"ccccc\"}\n", getApplicationContext());
-            ManejadorArchivos.EscribirArchivo("users", "{\"email\":\"d@d.com\",\"pass\":\"ddddd\"}\n", getApplicationContext());
-            //////////////////////////////////////////////////////TEST///////////////////////////////////////////////////////////
-
             ArrayList<String> users;
             users = ManejadorArchivos.LeerArchivo("users", getApplicationContext());
 
@@ -414,7 +402,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Toast.makeText(getApplicationContext(), "Usuario deslogeado", Toast.LENGTH_LONG).show();
     } */
 
-    public void launchRegisterActivity(View v){
-        startActivity(new Intent(this, RegisterActivity.class));
+    public void launchRegisterActivity(View view){
+        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

@@ -74,22 +74,4 @@ public abstract class ManejadorArchivos {
         }
         return texto;
     }
-/*
-        try
-        {
-            BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo));
-            String line;
-            while ((line = reader.readLine()) != null)
-            {
-                texto.add(line);
-            }
-            reader.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return texto;
-    }
-}*/
 }
