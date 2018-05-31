@@ -29,4 +29,7 @@
     <string name="title_notifications">Notificaciones</string>
     <string name="logout">Cerrar sesión</string>
     <string name="error_contrasenias_diferentes">Las contraseñas no son iguales</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
