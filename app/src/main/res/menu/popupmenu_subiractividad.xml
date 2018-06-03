@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/libro"
+        android:title="@string/subir_nuevo_libro"/>
+
+    <item
+        android:id="@+id/pelicula"
+        android:title="@string/subir_nueva_pel_cula"/>
+
+    <item
+        android:id="@+id/serie"
+        android:title="@string/subir_nueva_serie"/>
+</menu>

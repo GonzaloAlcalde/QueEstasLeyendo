@@ -3,10 +3,14 @@ package ar.edu.undav.queestasleyendo;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 
@@ -64,8 +68,38 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        final View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        final FloatingActionButton fab = v.findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup= new PopupMenu(getActivity(), fab);
+                popup.getMenuInflater().inflate(R.menu.popupmenu_subiractividad, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.libro:
+                                Toast.makeText(getActivity(), "libro", Toast.LENGTH_SHORT).show();
+                                return true;
+                            case R.id.pelicula:
+                                Toast.makeText(getActivity(), "pelicula", Toast.LENGTH_SHORT).show();
+                                return true;
+                            case R.id.serie:
+                                Toast.makeText(getActivity(), "serie", Toast.LENGTH_SHORT).show();
+                                return true;
+                            default:
+                                return true;
+                        }
+                    }
+                });
+
+                popup.show(); //showing popup menu
+            }
+        });
+
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,6 +108,8 @@ public class HomeFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
+
 
     @Override
     public void onAttach(Context context) {
