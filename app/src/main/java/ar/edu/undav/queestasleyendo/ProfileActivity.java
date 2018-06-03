@@ -42,6 +42,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction =  fragmentManager.beginTransaction();
+        transaction.replace(R.id.container, new HomeFragment()).commit();
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
