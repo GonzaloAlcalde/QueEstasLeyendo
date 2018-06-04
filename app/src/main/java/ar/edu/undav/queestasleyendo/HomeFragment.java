@@ -1,6 +1,7 @@
 package ar.edu.undav.queestasleyendo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import static android.app.Activity.RESULT_CANCELED;
 
 
 /**
@@ -81,6 +84,9 @@ public class HomeFragment extends Fragment {
                         switch (item.getItemId()) {
                             case R.id.libro:
                                 Toast.makeText(getActivity(), "libro", Toast.LENGTH_SHORT).show();
+                                int requestCode = 0;
+                                Intent intent = new Intent(getActivity(), CrearLibro.class);
+                                startActivityForResult(intent,requestCode);
                                 return true;
                             case R.id.pelicula:
                                 Toast.makeText(getActivity(), "pelicula", Toast.LENGTH_SHORT).show();
@@ -93,13 +99,33 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 });
-
                 popup.show(); //showing popup menu
             }
         });
-
-
         return v;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_CANCELED){
+            Toast.makeText(getActivity(), "Cancelado", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            String nombre= data.getExtras().getString("Nombre");
+            String autor= data.getExtras().getString("Autor");
+            String editorial= data.getExtras().getString("Editorial");
+            String genero= data.getExtras().getString("Genero");
+            String fecha= data.getExtras().getString("Fecha");
+            String puntaje= data.getExtras().getString("Puntaje");
+
+            Toast.makeText(getActivity(), nombre, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), autor, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), editorial, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), genero, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), fecha, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), puntaje, Toast.LENGTH_SHORT).show();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

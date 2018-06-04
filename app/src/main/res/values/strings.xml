@@ -35,4 +35,11 @@
     <string name="subir_nuevo_libro">Subir nuevo libro</string>
     <string name="subir_nueva_pel_cula">Subir nueva película</string>
     <string name="subir_nueva_serie">Subir nueva serie</string>
+    <string name="libro_autor">Autor</string>
+    <string name="libro_editorial">Editorial</string>
+    <string name="libro_genero">Género</string>
+    <string name="libro_fecha">Fecha</string>
+    <string name="libro_puntaje">Puntaje:</string>
+    <string name="botonSubirLibro">Subir libro</string>
+    <string name="cancelar">Cancelar</string>
 </resources>
