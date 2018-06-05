@@ -101,8 +101,8 @@ public abstract class ManejadorJSON {
             public int compare(JSONObject a, JSONObject b) {
                 String valA = "", valB = "";
                 try {
-                    valA = a.getString("puntaje");
-                    valB = b.getString("puntaje");
+                    valA = a.getString("puntajeLibro");
+                    valB = b.getString("puntajeLibro");
                 }
                 catch (JSONException e){
                     e.printStackTrace();
