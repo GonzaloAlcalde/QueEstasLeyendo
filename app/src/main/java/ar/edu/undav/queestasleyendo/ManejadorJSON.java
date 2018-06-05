@@ -2,6 +2,7 @@ package ar.edu.undav.queestasleyendo;
 
 import android.content.Context;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -9,7 +10,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public abstract class ManejadorJSON {
     private static Context applicationContext;
@@ -86,5 +92,49 @@ public abstract class ManejadorJSON {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static JSONArray ordenarJSONArray(JSONArray listaAOrdenar){
+        List<JSONObject> lista = convertirJSONArrayAList(listaAOrdenar);
+        Collections.sort(lista, new Comparator<JSONObject>() {
+
+            public int compare(JSONObject a, JSONObject b) {
+                String valA = "", valB = "";
+                try {
+                    valA = a.getString("puntajeLibro");
+                    valB = b.getString("puntajeLibro");
+                }
+                catch (JSONException e){
+                    e.printStackTrace();
+                }
+                return valA.compareTo(valB);
+            }
+        });
+        return convertirListAJSONArray(lista);
+    }
+
+    private static List<JSONObject> convertirJSONArrayAList(JSONArray lista){
+
+        List<JSONObject> lista2 = new ArrayList<JSONObject>();
+        for (int i = 0; i < lista.length(); i++) {
+            try{
+                lista2.add(lista.getJSONObject(i));
+            }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+
+        return lista2;
+    }
+
+    private static JSONArray convertirListAJSONArray(List<JSONObject> lista){
+        JSONArray lista2= new JSONArray();
+        Iterator<JSONObject> iterator = lista.iterator();
+        while (iterator.hasNext()) {
+            lista2.put(iterator);
+            iterator.next();
+        }
+        return lista2;
     }
 }
