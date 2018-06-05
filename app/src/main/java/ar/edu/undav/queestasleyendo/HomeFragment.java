@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,18 +36,20 @@ import static android.app.Activity.RESULT_CANCELED;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    private TextView texto;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private JSONObject JSONObjectUsuarios;
+    private JSONObject UsuarioYLibros;
+    private String mailUsuarioLogeado;
+
+    private MyAdapter mAdapter;
+    private RecyclerView recyclerView;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,7 +63,7 @@ public class HomeFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -83,21 +87,19 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        texto= v.findViewById(R.id.textView5);
         final FloatingActionButton fab = v.findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popup= new PopupMenu(getActivity(), fab);
+                PopupMenu popup = new PopupMenu(getActivity(), fab);
                 popup.getMenuInflater().inflate(R.menu.popupmenu_subiractividad, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.libro:
-                                Toast.makeText(getActivity(), "libro", Toast.LENGTH_SHORT).show();
                                 int requestCode = 0;
                                 Intent intent = new Intent(getActivity(), CrearLibro.class);
-                                startActivityForResult(intent,requestCode);
+                                startActivityForResult(intent, requestCode);
                                 return true;
                             case R.id.pelicula:
                                 Toast.makeText(getActivity(), "pelicula", Toast.LENGTH_SHORT).show();
@@ -113,7 +115,103 @@ public class HomeFragment extends Fragment {
                 popup.show(); //showing popup menu
             }
         });
+
+        File f = getActivity().getFileStreamPath("libros");
+        if (f.length() == 0) {
+            //El archivo no existe, crearlo
+            ManejadorArchivos.EscribirArchivoNuevo("libros", "{\"usuarios\":[]}", getActivity());
+            Toast.makeText(getActivity(), "archivo creado", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+        obtenerLibrosJSON();
+
+        // 1. get a reference to recyclerView
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        // this is data from recycler view
+        ItemData[] itemsData = new ItemData[0];
+        if(!(UsuarioYLibros==null)) {
+            try {
+                itemsData = crearItemsDataLibros();
+            } catch (NullPointerException e) {
+                itemsData = null;
+            }
+        }
+
+        if (!(itemsData == null)) {
+            // 2. set layoutManger
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            // 3. create an adapter
+            mAdapter = new MyAdapter(itemsData);
+            // 4. set adapter
+            recyclerView.setAdapter(mAdapter);
+            // 5. set item animator to DefaultAnimator
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+        }
+
         return v;
+    }
+
+    private ItemData[] crearItemsDataLibros() {
+        JSONArray arrayLibros = null;
+        ItemData[] itemsData = null;
+        try {
+            arrayLibros = UsuarioYLibros.getJSONArray("libros");
+
+            int cantidadLibros = arrayLibros.length();
+
+            if(cantidadLibros>0){
+                itemsData = new ItemData[arrayLibros.length()];
+                String nombreLibro;
+                String autorLibro;
+                String editorialLibro;
+                String generoLibro;
+                String fechaLibro;
+                String puntajeLibro;
+
+                for (int i = 0; i < arrayLibros.length(); i++) {
+                    JSONObject row = arrayLibros.getJSONObject(i);
+                    nombreLibro = row.getString("nombreLibro");
+                    autorLibro = row.getString("autorLibro");
+                    editorialLibro = row.getString("editorialLibro");
+                    generoLibro = row.getString("generoLibro");
+                    fechaLibro = row.getString("fechaLibro");
+                    puntajeLibro = row.getString("puntajeLibro");
+
+                    itemsData[i] = new ItemData(nombreLibro, R.drawable.ic_library_books_black_24dp, autorLibro, editorialLibro, generoLibro, fechaLibro, puntajeLibro);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return itemsData;
+    }
+
+    private void obtenerLibrosJSON() {
+        ArrayList<String> listaStringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getActivity());
+        JSONObject JSONUsuarioLogeado = null;
+        try {
+            JSONUsuarioLogeado = new JSONObject(listaStringUsuarioLogeado.get(0));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mailUsuarioLogeado = JSONUsuarioLogeado.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<String> listaLibros= ManejadorArchivos.LeerArchivo("libros",getActivity());
+        String stringListaLibros= listaLibros.get(0);
+
+        try {
+            JSONObjectUsuarios = new JSONObject(stringListaLibros);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        UsuarioYLibros = ManejadorJSON.buscarDatosJSONUsuario(JSONObjectUsuarios, mailUsuarioLogeado, getActivity());
     }
 
     @Override
@@ -139,34 +237,6 @@ public class HomeFragment extends Fragment {
 
             }
 
-            ArrayList<String> listaStringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getActivity());
-            JSONObject JSONUsuarioLogeado = null;
-            try {
-                JSONUsuarioLogeado = new JSONObject(listaStringUsuarioLogeado.get(0));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String mailUsuarioLogeado = null;
-            try {
-                mailUsuarioLogeado = JSONUsuarioLogeado.getString("email");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            ArrayList<String> listaLibros= ManejadorArchivos.LeerArchivo("libros",getActivity());
-            String stringListaLibros= listaLibros.get(0);
-
-            JSONObject JSONObjectUsuarios = null;
-            try {
-                JSONObjectUsuarios = new JSONObject(stringListaLibros);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JSONObject UsuarioYLibros = ManejadorJSON.buscarDatosJSONUsuario(JSONObjectUsuarios, mailUsuarioLogeado, getActivity());
-
-            String email = null;
-
             if (UsuarioYLibros == null){
                 //Agregar usuario y libro nuevo
                 JSONObject usuarioNuevo = new JSONObject();
@@ -179,15 +249,16 @@ public class HomeFragment extends Fragment {
                     libro.put("fechaLibro", fecha);
                     libro.put("puntajeLibro", puntaje);
 
+                    JSONArray libros = new JSONArray();
+                    libros.put(libro);
+
                     usuarioNuevo.put("email", mailUsuarioLogeado);
-                    usuarioNuevo.accumulate("libros",libro);
+                    usuarioNuevo.put("libros", libros);
 
                     JSONObjectUsuarios.accumulate("usuarios", usuarioNuevo);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //Toast.makeText(getActivity(), "primer if /", Toast.LENGTH_SHORT).show();
             }
             else{
                 //Agregar libro a usuario existente
@@ -203,30 +274,41 @@ public class HomeFragment extends Fragment {
                     UsuarioYLibros.accumulate("libros",libro);
 
                     ManejadorJSON.actualizarValorEnJSONObject(JSONObjectUsuarios, UsuarioYLibros);
-
-                    email= UsuarioYLibros.getString("email");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //Toast.makeText(getActivity(), "else /"+mailUsuarioLogeado+"/"+email, Toast.LENGTH_SHORT).show();
             }
             String stringJSONObjectUsuarios = JSONObjectUsuarios.toString();
             ManejadorArchivos.EscribirArchivoNuevo("libros", stringJSONObjectUsuarios, getActivity());
 
-            texto.setText(stringJSONObjectUsuarios);
+            obtenerLibrosJSON();
 
+            ItemData[] itemsData = new ItemData[0];
+            if(!(UsuarioYLibros==null)) {
+                try {
+                    itemsData = crearItemsDataLibros();
+                } catch (NullPointerException e) {
+                    itemsData = null;
+                }
+            }
+            if (!(itemsData == null)) {
+                // 2. set layoutManger
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                // 3. create an adapter
+                mAdapter = new MyAdapter(itemsData);
+                // 4. set adapter
+                recyclerView.setAdapter(mAdapter);
+                // 5. set item animator to DefaultAnimator
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+            }
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-
 
     @Override
     public void onAttach(Context context) {
@@ -255,7 +337,6 @@ public class HomeFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

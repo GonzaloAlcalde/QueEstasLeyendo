@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="200dp">
+
+    <!-- icon -->
+
+    <TextView
+        android:id="@+id/puntajeLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/nombreLibro"
+        android:layout_below="@+id/fechaLibro"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/fechaLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/nombreLibro"
+        android:layout_below="@+id/generoLibro"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/generoLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/nombreLibro"
+        android:layout_below="@+id/editorialLibro"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/editorialLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/nombreLibro"
+        android:layout_below="@+id/item_icon"
+        android:layout_marginTop="-1dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/autorLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/item_icon"
+        android:layout_alignStart="@+id/nombreLibro"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <TextView
+        android:id="@+id/nombreLibro"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/item_icon"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/item_icon"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="22dp" />
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="icon"
+        android:src="@drawable/ic_library_books_black_24dp" />
+
+    <!-- title -->
+
+</RelativeLayout>

@@ -130,6 +130,7 @@ public class RegisterActivity extends AppCompatActivity {
         ManejadorArchivos.EscribirArchivoNuevo("usuarioLogeado", "{\"email\":" + mail + ",\"pass\":" + password + "}", getApplicationContext());
 
         Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), (ManejadorArchivos.LeerArchivo("usuarioLogeado", getApplicationContext())).get(0), Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);

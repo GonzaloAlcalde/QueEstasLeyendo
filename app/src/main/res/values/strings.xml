@@ -42,4 +42,5 @@
     <string name="libro_puntaje">Puntaje:</string>
     <string name="botonSubirLibro">Subir libro</string>
     <string name="cancelar">Cancelar</string>
+    <string name="deleteAll">Borrar todo</string>
 </resources>
