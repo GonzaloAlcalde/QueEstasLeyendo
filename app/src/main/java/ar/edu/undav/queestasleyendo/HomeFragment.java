@@ -14,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import static android.app.Activity.RESULT_CANCELED;
 
 
@@ -125,6 +131,93 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getActivity(), genero, Toast.LENGTH_SHORT).show();
             Toast.makeText(getActivity(), fecha, Toast.LENGTH_SHORT).show();
             Toast.makeText(getActivity(), puntaje, Toast.LENGTH_SHORT).show();
+
+            ////
+            ManejadorArchivos.EscribirArchivoNuevo("libros", "{\"usuarios\":[]}", getActivity());
+            ////
+
+            ArrayList<String> listaStringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getActivity());
+            JSONObject JSONUsuarioLogeado = null;
+            try {
+                JSONUsuarioLogeado = new JSONObject(listaStringUsuarioLogeado.get(0));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String mailUsuarioLogeado = null;
+            try {
+                mailUsuarioLogeado = JSONUsuarioLogeado.getString("email");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            ArrayList<String> listaLibros= ManejadorArchivos.LeerArchivo("libros",getActivity());
+            String stringListaLibros= listaLibros.get(0);
+
+            JSONObject JSONObjectUsuarios = null;
+            try {
+                JSONObjectUsuarios = new JSONObject(stringListaLibros);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JSONArray JSONArrayLibros = null;
+            try {
+                JSONArrayLibros= JSONObjectUsuarios.getJSONArray("usuarios");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JSONObject UsuarioYLibros = ManejadorJSON.buscarDatosJSONUsuario(JSONArrayLibros, mailUsuarioLogeado, getActivity());
+
+            if (UsuarioYLibros == null){
+                //Agregar usuario y libro nuevo
+                JSONObject usuarioNuevo = new JSONObject();
+                JSONArray libros = new JSONArray();
+                JSONObject libro = new JSONObject();
+                try {
+                    libro.put("nombreLibro", nombre);
+                    libro.put("autorLibro", autor);
+                    libro.put("editorialLibro", editorial);
+                    libro.put("generoLibro", genero);
+                    libro.put("fechaLibro", fecha);
+                    libro.put("puntajeLibro", puntaje);
+
+                    libros.put(libro);
+
+                    usuarioNuevo.put("email", mailUsuarioLogeado);
+                    usuarioNuevo.put("libros",libros);
+
+                    JSONObjectUsuarios.put("usuarios", usuarioNuevo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            else{
+                //Agregar libro a usuario existente
+                JSONObject libro = new JSONObject();
+                try {
+                    libro.put("nombreLibro", nombre);
+                    libro.put("autorLibro", autor);
+                    libro.put("editorialLibro", editorial);
+                    libro.put("generoLibro", genero);
+                    libro.put("fechaLibro", fecha);
+                    libro.put("puntajeLibro", puntaje);
+
+                    JSONArray libros = UsuarioYLibros.getJSONArray("libros");
+
+                    libros.put(libro);
+
+                    UsuarioYLibros.put("libros",libros);
+
+                    ManejadorJSON.actualizarValorEnJSONObject(JSONObjectUsuarios, UsuarioYLibros);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            String stringJSONObjectUsuarios = JSONObjectUsuarios.toString();
+            ManejadorArchivos.EscribirArchivoNuevo("libros", stringJSONObjectUsuarios, getActivity());
+
+            Toast.makeText(getActivity(), stringJSONObjectUsuarios, Toast.LENGTH_SHORT).show();
+
         }
     }
 

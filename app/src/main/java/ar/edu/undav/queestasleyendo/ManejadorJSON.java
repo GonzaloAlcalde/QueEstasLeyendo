@@ -42,4 +42,44 @@ public abstract class ManejadorJSON {
         }
         return loginValido;
     }
+
+    public static JSONObject buscarDatosJSONUsuario(JSONArray JSONArrayABuscar, String emailBuscado, Context context){
+        Boolean usuarioEncontrado = false;
+        JSONObject DatosJSONDeUsuario = null;
+        int i=0;
+        try{
+            String email;
+            while (!usuarioEncontrado && i < JSONArrayABuscar.length()){
+                DatosJSONDeUsuario = JSONArrayABuscar.getJSONObject(i);
+                email = DatosJSONDeUsuario.getString("email");
+                if (emailBuscado.equals(email)){
+                    usuarioEncontrado = true;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return DatosJSONDeUsuario;
+    }
+
+    public static void actualizarValorEnJSONObject(JSONObject TodosLosValores, JSONObject ValorActualizado){
+        JSONArray array = null;
+        String emailBuscado;
+        try {
+            array = TodosLosValores.getJSONArray("usuarios");
+            emailBuscado = ValorActualizado.getString("email");
+
+            for(int i=0; i < array.length(); i++){
+                JSONObject object = array.getJSONObject(i);
+                String email = object.getString("email");
+                if (email.equals(emailBuscado)){
+                    array.put(i, ValorActualizado);
+                    TodosLosValores.put("usuarios", array);
+                    break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
