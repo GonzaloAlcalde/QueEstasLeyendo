@@ -12,12 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -32,6 +34,8 @@ import static android.app.Activity.RESULT_CANCELED;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private TextView texto;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -79,6 +83,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_home, container, false);
 
+        texto= v.findViewById(R.id.textView5);
         final FloatingActionButton fab = v.findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,16 +130,14 @@ public class HomeFragment extends Fragment {
             String fecha= data.getExtras().getString("Fecha");
             String puntaje= data.getExtras().getString("Puntaje");
 
-            Toast.makeText(getActivity(), nombre, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), autor, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), editorial, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), genero, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), fecha, Toast.LENGTH_SHORT).show();
-            Toast.makeText(getActivity(), puntaje, Toast.LENGTH_SHORT).show();
+            //getActivity().deleteFile("libros");
+            File f = getActivity().getFileStreamPath("libros");
+            if (f.length() == 0) {
+                //El archivo no existe, crearlo
+                ManejadorArchivos.EscribirArchivoNuevo("libros", "{\"usuarios\":[]}", getActivity());
+                Toast.makeText(getActivity(), "archivo creado", Toast.LENGTH_SHORT).show();
 
-            ////
-            ManejadorArchivos.EscribirArchivoNuevo("libros", "{\"usuarios\":[]}", getActivity());
-            ////
+            }
 
             ArrayList<String> listaStringUsuarioLogeado= ManejadorArchivos.LeerArchivo("usuarioLogeado", getActivity());
             JSONObject JSONUsuarioLogeado = null;
@@ -160,18 +163,13 @@ public class HomeFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            JSONArray JSONArrayLibros = null;
-            try {
-                JSONArrayLibros= JSONObjectUsuarios.getJSONArray("usuarios");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JSONObject UsuarioYLibros = ManejadorJSON.buscarDatosJSONUsuario(JSONArrayLibros, mailUsuarioLogeado, getActivity());
+            JSONObject UsuarioYLibros = ManejadorJSON.buscarDatosJSONUsuario(JSONObjectUsuarios, mailUsuarioLogeado, getActivity());
+
+            String email = null;
 
             if (UsuarioYLibros == null){
                 //Agregar usuario y libro nuevo
                 JSONObject usuarioNuevo = new JSONObject();
-                JSONArray libros = new JSONArray();
                 JSONObject libro = new JSONObject();
                 try {
                     libro.put("nombreLibro", nombre);
@@ -181,15 +179,15 @@ public class HomeFragment extends Fragment {
                     libro.put("fechaLibro", fecha);
                     libro.put("puntajeLibro", puntaje);
 
-                    libros.put(libro);
-
                     usuarioNuevo.put("email", mailUsuarioLogeado);
-                    usuarioNuevo.put("libros",libros);
+                    usuarioNuevo.accumulate("libros",libro);
 
-                    JSONObjectUsuarios.put("usuarios", usuarioNuevo);
+                    JSONObjectUsuarios.accumulate("usuarios", usuarioNuevo);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                //Toast.makeText(getActivity(), "primer if /", Toast.LENGTH_SHORT).show();
             }
             else{
                 //Agregar libro a usuario existente
@@ -202,21 +200,21 @@ public class HomeFragment extends Fragment {
                     libro.put("fechaLibro", fecha);
                     libro.put("puntajeLibro", puntaje);
 
-                    JSONArray libros = UsuarioYLibros.getJSONArray("libros");
-
-                    libros.put(libro);
-
-                    UsuarioYLibros.put("libros",libros);
+                    UsuarioYLibros.accumulate("libros",libro);
 
                     ManejadorJSON.actualizarValorEnJSONObject(JSONObjectUsuarios, UsuarioYLibros);
+
+                    email= UsuarioYLibros.getString("email");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                //Toast.makeText(getActivity(), "else /"+mailUsuarioLogeado+"/"+email, Toast.LENGTH_SHORT).show();
             }
             String stringJSONObjectUsuarios = JSONObjectUsuarios.toString();
             ManejadorArchivos.EscribirArchivoNuevo("libros", stringJSONObjectUsuarios, getActivity());
 
-            Toast.makeText(getActivity(), stringJSONObjectUsuarios, Toast.LENGTH_SHORT).show();
+            texto.setText(stringJSONObjectUsuarios);
 
         }
     }

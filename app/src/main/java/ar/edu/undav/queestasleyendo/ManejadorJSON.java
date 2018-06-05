@@ -43,21 +43,26 @@ public abstract class ManejadorJSON {
         return loginValido;
     }
 
-    public static JSONObject buscarDatosJSONUsuario(JSONArray JSONArrayABuscar, String emailBuscado, Context context){
+    public static JSONObject buscarDatosJSONUsuario(JSONObject JSONObjectABuscar, String emailBuscado, Context context){
         Boolean usuarioEncontrado = false;
         JSONObject DatosJSONDeUsuario = null;
         int i=0;
         try{
             String email;
+            JSONArray JSONArrayABuscar = JSONObjectABuscar.getJSONArray("usuarios");
             while (!usuarioEncontrado && i < JSONArrayABuscar.length()){
                 DatosJSONDeUsuario = JSONArrayABuscar.getJSONObject(i);
                 email = DatosJSONDeUsuario.getString("email");
                 if (emailBuscado.equals(email)){
                     usuarioEncontrado = true;
                 }
+                i++;
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        if(!usuarioEncontrado){
+            DatosJSONDeUsuario= null;
         }
         return DatosJSONDeUsuario;
     }
