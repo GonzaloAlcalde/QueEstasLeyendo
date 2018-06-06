@@ -109,7 +109,7 @@ public abstract class ManejadorJSON {
 
     public static JSONArray ordenarJSONArrayPorFecha(JSONArray arrayAOrdenar){
         ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final java.text.DateFormat formatter = java.text.DateFormat.getDateInstance();
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
