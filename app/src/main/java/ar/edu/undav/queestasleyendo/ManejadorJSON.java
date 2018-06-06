@@ -110,7 +110,7 @@ public abstract class ManejadorJSON {
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
-                int valA = 0, valB = 0;
+                Integer valA = 0, valB = 0;
                 try {
                     valA = a.getInt("puntajeLibro");
                     valB = b.getInt("puntajeLibro");
