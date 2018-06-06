@@ -109,19 +109,16 @@ public abstract class ManejadorJSON {
 
     public static JSONArray ordenarJSONArrayPorFecha(JSONArray arrayAOrdenar){
         ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
-        final java.text.DateFormat formatter = java.text.DateFormat.getDateInstance();
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
+                java.text.DateFormat formatter = java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT);
                 Date valA = new Date(), valB = new Date();
                 try {
                     valA = formatter.parse(a.getString("fechaLibro"));
                     valB = formatter.parse(b.getString("fechaLibro"));
                 }
-                catch (JSONException e){
-                    e.printStackTrace();
-                }
-                catch (ParseException e){
+                catch (JSONException|ParseException e){
                     e.printStackTrace();
                 }
                 return (valA).compareTo(valB);
