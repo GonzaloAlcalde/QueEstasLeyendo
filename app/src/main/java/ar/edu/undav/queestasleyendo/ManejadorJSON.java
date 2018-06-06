@@ -174,7 +174,7 @@ public abstract class ManejadorJSON {
 
     private static JSONArray convertirListAJSONArray(ArrayList<JSONObject> lista){
         JSONArray lista2= new JSONArray();
-        for(int i = lista.size() - 1; i > 0; i--){
+        for(int i = lista.size() - 1; i >= 0; i--){
             lista2.put(lista.get(i));
         }
         return lista2;

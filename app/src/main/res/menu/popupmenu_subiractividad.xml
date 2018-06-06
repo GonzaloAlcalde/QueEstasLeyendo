@@ -11,4 +11,10 @@
     <item
         android:id="@+id/serie"
         android:title="@string/subir_nueva_serie"/>
+    <item
+        android:id="@+id/topFive"
+        android:title="Ordenar Por Puntaje"/>
+    <item
+        android:id="@+id/lastFive"
+        android:title="Ordenar Por Fecha"/>
 </menu>
