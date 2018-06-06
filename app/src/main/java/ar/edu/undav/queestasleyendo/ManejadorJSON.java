@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -94,8 +95,18 @@ public abstract class ManejadorJSON {
         }
     }
 
-    public static JSONArray ordenarJSONArray(JSONArray listaAOrdenar){
-        List<JSONObject> lista = convertirJSONArrayAList(listaAOrdenar);
+    /*
+    public static JSONArray oredenarJSONArrayPorPuntaje(JSONArray arrayAOrdenar){
+        return ordenarJSONArray(arrayAOrdenar, "puntaje");
+    }
+
+    public static JSONArray ordenarJSONArrayPorFecha(JSONArray arrayAOrdenar){
+        return ordenarJSONArray(arrayAOrdenar, "fecha");
+    }
+    */
+
+    public static JSONArray ordenarJSONArray(JSONArray arrayAOrdenar){
+        ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
@@ -113,9 +124,9 @@ public abstract class ManejadorJSON {
         return convertirListAJSONArray(lista);
     }
 
-    private static List<JSONObject> convertirJSONArrayAList(JSONArray lista){
+    private static ArrayList<JSONObject> convertirJSONArrayAList(JSONArray lista){
 
-        List<JSONObject> lista2 = new ArrayList<JSONObject>();
+        ArrayList<JSONObject> lista2 = new ArrayList<JSONObject>();
         for (int i = 0; i < lista.length(); i++) {
             try{
                 lista2.add(lista.getJSONObject(i));
@@ -128,12 +139,10 @@ public abstract class ManejadorJSON {
         return lista2;
     }
 
-    private static JSONArray convertirListAJSONArray(List<JSONObject> lista){
+    private static JSONArray convertirListAJSONArray(ArrayList<JSONObject> lista){
         JSONArray lista2= new JSONArray();
-        Iterator<JSONObject> iterator = lista.iterator();
-        while (iterator.hasNext()) {
-            lista2.put(iterator);
-            iterator.next();
+        for(int i = 0; i < lista.size(); i++){
+            lista2.put(lista.get(i));
         }
         return lista2;
     }
