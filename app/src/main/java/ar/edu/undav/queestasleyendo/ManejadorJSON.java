@@ -110,10 +110,10 @@ public abstract class ManejadorJSON {
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
-                String valA = "", valB = "";
+                int valA = 0, valB = 0;
                 try {
-                    valA = a.getString("puntajeLibro");
-                    valB = b.getString("puntajeLibro");
+                    valA = a.getInt("puntajeLibro");
+                    valB = b.getInt("puntajeLibro");
                 }
                 catch (JSONException e){
                     e.printStackTrace();
@@ -141,7 +141,7 @@ public abstract class ManejadorJSON {
 
     private static JSONArray convertirListAJSONArray(ArrayList<JSONObject> lista){
         JSONArray lista2= new JSONArray();
-        for(int i = 0; i < lista.size(); i++){
+        for(int i = lista.size() - 1; i > 0; i--){
             lista2.put(lista.get(i));
         }
         return lista2;
