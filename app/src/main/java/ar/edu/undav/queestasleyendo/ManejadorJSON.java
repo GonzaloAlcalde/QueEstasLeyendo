@@ -1,6 +1,9 @@
 package ar.edu.undav.queestasleyendo;
 
 import android.content.Context;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
+import android.nfc.FormatException;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -10,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,18 +109,22 @@ public abstract class ManejadorJSON {
 
     public static JSONArray ordenarJSONArrayPorFecha(JSONArray arrayAOrdenar){
         ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Collections.sort(lista, new Comparator<JSONObject>() {
 
             public int compare(JSONObject a, JSONObject b) {
-                Object valA = null, valB = null;
+                Date valA = new Date(), valB = new Date();
                 try {
-                    valA = a.get("fechaLibro");
-                    valB = b.get("fechaLibro");
+                    valA = formatter.parse(a.getString("fechaLibro"));
+                    valB = formatter.parse(b.getString("fechaLibro"));
                 }
                 catch (JSONException e){
                     e.printStackTrace();
                 }
-                return ((Date)valA).compareTo((Date)valB);
+                catch (ParseException e){
+                    e.printStackTrace();
+                }
+                return (valA).compareTo(valB);
             }
         });
         return convertirListAJSONArray(lista);
@@ -140,9 +149,20 @@ public abstract class ManejadorJSON {
         return convertirListAJSONArray(lista);
     }
 
+    /*
+    private static int compare(Object a, Object b, String tipo){
+        switch (tipo){
+            case "fecha":
+                return ((Date)a).compareTo((Date)b);
+            case "puntaje":
+                return  ((Integer)a).compareTo((Integer)b);
+        }
+    }
+    */
+
     private static ArrayList<JSONObject> convertirJSONArrayAList(JSONArray lista){
 
-        ArrayList<JSONObject> lista2 = new ArrayList<JSONObject>();
+        ArrayList<JSONObject> lista2 = new ArrayList<>();
         for (int i = 0; i < lista.length(); i++) {
             try{
                 lista2.add(lista.getJSONObject(i));
