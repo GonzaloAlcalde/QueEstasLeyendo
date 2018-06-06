@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -99,11 +100,26 @@ public abstract class ManejadorJSON {
     public static JSONArray oredenarJSONArrayPorPuntaje(JSONArray arrayAOrdenar){
         return ordenarJSONArray(arrayAOrdenar, "puntaje");
     }
+    */
 
     public static JSONArray ordenarJSONArrayPorFecha(JSONArray arrayAOrdenar){
-        return ordenarJSONArray(arrayAOrdenar, "fecha");
+        ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
+        Collections.sort(lista, new Comparator<JSONObject>() {
+
+            public int compare(JSONObject a, JSONObject b) {
+                Object valA = null, valB = null;
+                try {
+                    valA = a.get("fechaLibro");
+                    valB = b.get("fechaLibro");
+                }
+                catch (JSONException e){
+                    e.printStackTrace();
+                }
+                return ((Date)valA).compareTo((Date)valB);
+            }
+        });
+        return convertirListAJSONArray(lista);
     }
-    */
 
     public static JSONArray ordenarJSONArray(JSONArray arrayAOrdenar){
         ArrayList<JSONObject> lista = convertirJSONArrayAList(arrayAOrdenar);
