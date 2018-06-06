@@ -81,7 +81,6 @@ public class ProfileFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "PERFIL", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -102,33 +102,56 @@ public class HomeFragment extends Fragment {
                                 startActivityForResult(intent, requestCode);
                                 return true;
                             case R.id.pelicula:
-                                Toast.makeText(getActivity(), "pelicula", Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.serie:
-                                Toast.makeText(getActivity(), "serie", Toast.LENGTH_SHORT).show();
                                 return true;
-                            default:
-                                return true;
-                        }
-                    }
-                });
-                popup.show(); //showing popup menu
-            }
-        });
-
-        final FloatingActionButton fab2 = v.findViewById(R.id.floatingActionButton4);
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(getActivity(), fab2);
-                popup.getMenuInflater().inflate(R.menu.popupmenu_subiractividad, popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
                             case R.id.topFive:
-                                queSeaLoQueDiosQuiera(inflater, container);
+                                // 1. get a reference to recyclerView
+                                recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+                                // this is data from recycler view
+                                ItemData[] itemsData = new ItemData[0];
+                                if(!(UsuarioYLibros==null)) {
+                                    try {
+                                        itemsData = crearItemsDataLibrosOrdenadosPorPuntaje();
+                                    } catch (NullPointerException e) {
+                                        itemsData = null;
+                                    }
+                                }
+
+                                if (!(itemsData == null)) {
+                                    // 2. set layoutManger
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                    // 3. create an adapter
+                                    mAdapter = new MyAdapter(itemsData);
+                                    // 4. set adapter
+                                    recyclerView.setAdapter(mAdapter);
+                                    // 5. set item animator to DefaultAnimator
+                                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                }
                                 return true;
                             case R.id.lastFive:
+                                // 1. get a reference to recyclerView
+                                recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+                                // this is data from recycler view
+                                ItemData[] itemsData2 = new ItemData[0];
+                                if(!(UsuarioYLibros==null)) {
+                                    try {
+                                        itemsData2 = crearItemsDataLibrosOrdenadosPorFecha();
+                                    } catch (NullPointerException e) {
+                                        itemsData2 = null;
+                                    }
+                                }
+
+                                if (!(itemsData2 == null)) {
+                                    // 2. set layoutManger
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                    // 3. create an adapter
+                                    mAdapter = new MyAdapter(itemsData2);
+                                    // 4. set adapter
+                                    recyclerView.setAdapter(mAdapter);
+                                    // 5. set item animator to DefaultAnimator
+                                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                                }
 
                                 return true;
                             default:
@@ -179,16 +202,14 @@ public class HomeFragment extends Fragment {
 
     private ItemData[] crearItemsDataLibros() {
         JSONArray arrayLibros = null;
-        JSONArray arrayLibrosOrdenados = null;
         ItemData[] itemsData = null;
         try {
             arrayLibros = UsuarioYLibros.getJSONArray("libros");
-            arrayLibrosOrdenados = ManejadorJSON.ordenarJSONArrayPorFecha(arrayLibros);
 
-            int cantidadLibros = arrayLibrosOrdenados.length();
+            int cantidadLibros = arrayLibros.length();
 
             if(cantidadLibros>0){
-                itemsData = new ItemData[arrayLibrosOrdenados.length()];
+                itemsData = new ItemData[arrayLibros.length()];
                 String nombreLibro;
                 String autorLibro;
                 String editorialLibro;
@@ -196,8 +217,8 @@ public class HomeFragment extends Fragment {
                 String fechaLibro;
                 String puntajeLibro;
 
-                for (int i = 0; i < arrayLibrosOrdenados.length(); i++) {
-                    JSONObject row = arrayLibrosOrdenados.getJSONObject(i);
+                for (int i = 0; i < arrayLibros.length(); i++) {
+                    JSONObject row = arrayLibros.getJSONObject(i);
                     nombreLibro = row.getString("nombreLibro");
                     autorLibro = row.getString("autorLibro");
                     editorialLibro = row.getString("editorialLibro");
@@ -342,7 +363,6 @@ public class HomeFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "INICIO", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -366,34 +386,6 @@ public class HomeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void queSeaLoQueDiosQuiera(LayoutInflater inflater, ViewGroup container){
-
-        final View v = inflater.inflate(R.layout.fragment_home, container, false);
-
-        // 1. get a reference to recyclerView
-        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-        // this is data from recycler view
-        ItemData[] itemsData = new ItemData[0];
-        if(!(UsuarioYLibros==null)) {
-            try {
-                itemsData = crearItemsDataLibrosOrdenadosPorPuntaje();
-            } catch (NullPointerException e) {
-                itemsData = null;
-            }
-        }
-
-        if (!(itemsData == null)) {
-            // 2. set layoutManger
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            // 3. create an adapter
-            mAdapter = new MyAdapter(itemsData);
-            // 4. set adapter
-            recyclerView.setAdapter(mAdapter);
-            // 5. set item animator to DefaultAnimator
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-        }
-    }
-
     private ItemData[] crearItemsDataLibrosOrdenadosPorPuntaje() {
         JSONArray arrayLibros = null;
         JSONArray arrayLibrosOrdenados = null;
@@ -401,6 +393,43 @@ public class HomeFragment extends Fragment {
         try {
             arrayLibros = UsuarioYLibros.getJSONArray("libros");
             arrayLibrosOrdenados = ManejadorJSON.ordenarJSONArray(arrayLibros);
+
+            int cantidadLibros = arrayLibrosOrdenados.length();
+
+            if(cantidadLibros>0){
+                itemsData = new ItemData[arrayLibrosOrdenados.length()];
+                String nombreLibro;
+                String autorLibro;
+                String editorialLibro;
+                String generoLibro;
+                String fechaLibro;
+                String puntajeLibro;
+
+                for (int i = 0; i < arrayLibrosOrdenados.length(); i++) {
+                    JSONObject row = arrayLibrosOrdenados.getJSONObject(i);
+                    nombreLibro = row.getString("nombreLibro");
+                    autorLibro = row.getString("autorLibro");
+                    editorialLibro = row.getString("editorialLibro");
+                    generoLibro = row.getString("generoLibro");
+                    fechaLibro = row.getString("fechaLibro");
+                    puntajeLibro = row.getString("puntajeLibro");
+
+                    itemsData[i] = new ItemData(nombreLibro, R.drawable.ic_library_books_black_24dp, autorLibro, editorialLibro, generoLibro, fechaLibro, puntajeLibro);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return itemsData;
+    }
+
+    private ItemData[] crearItemsDataLibrosOrdenadosPorFecha() {
+        JSONArray arrayLibros = null;
+        JSONArray arrayLibrosOrdenados = null;
+        ItemData[] itemsData = null;
+        try {
+            arrayLibros = UsuarioYLibros.getJSONArray("libros");
+            arrayLibrosOrdenados = ManejadorJSON.ordenarJSONArrayPorFecha(arrayLibros);
 
             int cantidadLibros = arrayLibrosOrdenados.length();
 

@@ -81,7 +81,6 @@ public class NotificationFragment extends Fragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            Toast.makeText(context, "NOTIFICACIONES", Toast.LENGTH_SHORT).show();
         }
     }
 

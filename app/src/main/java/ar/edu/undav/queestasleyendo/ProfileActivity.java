@@ -24,10 +24,10 @@ public class ProfileActivity extends AppCompatActivity {
             FragmentTransaction transaction =  fragmentManager.beginTransaction();
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    transaction.replace(R.id.container, new HomeFragment()).commit();
+                    transaction.replace(R.id.container, new ProfileFragment()).commit();
                     return true;
                 case R.id.navigation_dashboard:
-                    transaction.replace(R.id.container, new ProfileFragment()).commit();
+                    transaction.replace(R.id.container, new HomeFragment()).commit();
                     return true;
                 case R.id.navigation_notifications:
                     transaction.replace(R.id.container, new NotificationFragment()).commit();
@@ -44,7 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction =  fragmentManager.beginTransaction();
-        transaction.replace(R.id.container, new HomeFragment()).commit();
+        transaction.replace(R.id.container, new ProfileFragment()).commit();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
